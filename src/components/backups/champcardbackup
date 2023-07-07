@@ -1,0 +1,108 @@
+// import React, { useState } from 'react';
+// import { Card, CardContent, Typography, Slider, Grid } from '@mui/material';
+
+// const ChampionCard = ({ champion, locked }) => {
+//   const [level, setLevel] = useState(1);
+
+//   const handleLevelChange = (event, newValue) => {
+//     setLevel(newValue);
+//   };
+
+//   const renderStats = () => {
+//     if (!champion || !champion.stats) {
+//       return null;
+//     }
+
+//     const unwantedStats = [
+//       'hpperlevel',
+//       'mpperlevel',
+//       'movespeed',
+//       'armorperlevel',
+//       'spellblockperlevel',
+//       'attackrange',
+//       'hpregenperlevel',
+//       'mpregenperlevel',
+//       'critperlevel',
+//       'attackdamageperlevel',
+//       'attackspeedperlevel',
+//     ];
+
+//     const { stats } = champion;
+
+//     return Object.entries(stats)
+//       .filter(([statName]) => !unwantedStats.includes(statName))
+//       .map(([statName, statValue]) => {
+//         // Skip rendering if the stat is not a number
+//         if (typeof statValue !== 'number') return null;
+
+//         // Calculate the scaled stat based on the level
+//         const scaledStat = Math.round(statValue + (stats[`${statName}perlevel`] || 0) * (level - 1));
+
+//         return (
+//           <Typography variant="body2" color="text.secondary" key={statName}>
+//             {statName}: {scaledStat}
+//           </Typography>
+//         );
+//       });
+//   };
+
+//   if (!champion) {
+//     return null; // Render null if the champion is undefined
+//   }
+
+//   const { name, title } = champion;
+
+//   return (
+//     <Card sx={{ maxWidth: 300 }}>
+//       <CardContent>
+//         <Typography variant="h5" component="div">
+//           {name}
+//         </Typography>
+//         <Typography variant="subtitle1" color="text.secondary">
+//           {title}
+//         </Typography>
+//         <div>
+//           <Typography id="level-slider" gutterBottom>
+//             Level: {level}
+//           </Typography>
+//           <Slider
+//             aria-label="Level"
+//             defaultValue={1}
+//             min={1}
+//             max={18}
+//             step={1}
+//             valueLabelDisplay="auto"
+//             onChange={handleLevelChange}
+//           />
+//         </div>
+//         {renderStats()}
+//       </CardContent>
+//       {locked && (
+//         <CardContent>
+//           <Grid container spacing={2}>
+//             <Grid item xs={4}>
+//               Slot 1
+//             </Grid>
+//             <Grid item xs={4}>
+//               Slot 2
+//             </Grid>
+//             <Grid item xs={4}>
+//               Slot 3
+//             </Grid>
+//             <Grid item xs={4}>
+//               Slot 4
+//             </Grid>
+//             <Grid item xs={4}>
+//               Slot 5
+//             </Grid>
+//             <Grid item xs={4}>
+//               Slot 6
+//             </Grid>
+//           </Grid>
+//         </CardContent>
+//       )}
+//     </Card>
+//   );
+// };
+
+// export default ChampionCard;

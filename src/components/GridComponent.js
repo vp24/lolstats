@@ -30,7 +30,7 @@ export class GridComponent extends React.Component {
       openDialog: false
     });
 
-    this.props.onItemSelect(item);
+    this.props.onItemSelect(item, this.state.selectedSlot); // modified line
   };
 
   handleItemRemove = (i) => {
@@ -42,7 +42,7 @@ export class GridComponent extends React.Component {
     });
 
     if (item) {
-      this.props.onItemRemove(item);
+      this.props.onItemRemove(item, i); // modified line
     }
   };
 

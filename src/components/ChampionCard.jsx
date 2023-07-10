@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Typography, Slider, Container } from '@mui/material';
+import { Card, CardContent, Typography, Slider, Container, Box } from '@mui/material';
 import { GridComponent } from './GridComponent';
 import { items } from '../ItemData';
 
 const ChampionCard = ({ champion, locked }) => {
   const [level, setLevel] = useState(1);
   const [stats, setStats] = useState(champion ? champion.stats : {});
+  const [itemStats, setItemStats] = useState({}); // new state
+  const [selectedItems, setSelectedItems] = useState(Array(6).fill(null)); 
 
   useEffect(() => {
     if (champion) {
@@ -17,31 +19,43 @@ const ChampionCard = ({ champion, locked }) => {
     setLevel(newValue);
   };
 
-  const handleItemSelect = (item) => {
-    const newStats = { ...stats };
+  const handleItemSelect = (item, index) => { 
+    const newStats = { ...itemStats }; // operate on itemStats
     for (const stat in item.stats) {
       if (newStats[stat] !== undefined) {
         newStats[stat] += item.stats[stat];
+      } else {
+        newStats[stat] = item.stats[stat];
       }
     }
-    setStats(newStats);
+    setItemStats(newStats); // setItemStats instead
+    setSelectedItems(prev => {
+      const newItems = [...prev];
+      newItems[index] = item;
+      return newItems;
+    });
   };
 
-  const handleItemRemove = (item) => {
-    const newStats = { ...stats };
+  const handleItemRemove = (item, index) => { 
+    const newStats = { ...itemStats }; // operate on itemStats
     for (const stat in item.stats) {
       if (newStats[stat] !== undefined) {
         newStats[stat] -= item.stats[stat];
       }
     }
-    setStats(newStats);
+    setItemStats(newStats); // setItemStats instead
+    setSelectedItems(prev => {
+      const newItems = [...prev];
+      newItems[index] = null;
+      return newItems;
+    });
   };
 
   const renderStats = () => {
     if (!stats) {
       return null;
     }
-
+  
     const unwantedStats = [
       'hpperlevel',
       'mpperlevel',
@@ -55,7 +69,7 @@ const ChampionCard = ({ champion, locked }) => {
       'attackdamageperlevel',
       'attackspeedperlevel',
     ];
-
+  
     return Object.entries(stats)
       .filter(([statName]) => !unwantedStats.includes(statName))
       .map(([statName, statValue]) => {
@@ -66,6 +80,14 @@ const ChampionCard = ({ champion, locked }) => {
           </Typography>
         );
       });
+  };
+  const renderItemEffects = () => { // new method
+    return Object.entries(itemStats)
+      .map(([statName, statValue]) => (
+        <Typography variant="body2" color="text.secondary" key={statName}>
+          {statName}: {statValue}
+        </Typography>
+      ));
   };
 
   if (!champion) {
@@ -97,7 +119,16 @@ const ChampionCard = ({ champion, locked }) => {
             onChange={handleLevelChange}
           />
         </div>
+        <Typography variant="h6" component="div">
+          Champion Stats:
+        </Typography>
         {renderStats()}
+        <Typography variant="h6" component="div">
+          Item Effects:
+        </Typography>
+        <Box sx={{ p: 1, m: 1, border: '1px solid #000', borderRadius: '5px' }}> 
+          {renderItemEffects()} 
+        </Box>
         <Container>
           <GridComponent
             items={Object.values(items.data)}

@@ -1,18 +1,61 @@
-// import React, { useState } from 'react';
-// import { Card, CardContent, Typography, Slider, Grid } from '@mui/material';
+// import React, { useState, useEffect } from 'react';
+// import { Card, CardContent, Typography, Slider, Container, Box } from '@mui/material';
+// import { GridComponent } from './GridComponent';
+// import { items } from '../ItemData';
 
 // const ChampionCard = ({ champion, locked }) => {
 //   const [level, setLevel] = useState(1);
+//   const [stats, setStats] = useState(champion ? champion.stats : {});
+//   const [itemStats, setItemStats] = useState({}); // new state
+//   const [selectedItems, setSelectedItems] = useState(Array(6).fill(null)); 
+
+//   useEffect(() => {
+//     if (champion) {
+//       setStats(champion.stats);
+//     }
+//   }, [champion]);
 
 //   const handleLevelChange = (event, newValue) => {
 //     setLevel(newValue);
 //   };
 
+//   const handleItemSelect = (item, index) => { 
+//     const newStats = { ...itemStats }; // operate on itemStats
+//     for (const stat in item.stats) {
+//       if (newStats[stat] !== undefined) {
+//         newStats[stat] += item.stats[stat];
+//       } else {
+//         newStats[stat] = item.stats[stat];
+//       }
+//     }
+//     setItemStats(newStats); // setItemStats instead
+//     setSelectedItems(prev => {
+//       const newItems = [...prev];
+//       newItems[index] = item;
+//       return newItems;
+//     });
+//   };
+
+//   const handleItemRemove = (item, index) => { 
+//     const newStats = { ...itemStats }; // operate on itemStats
+//     for (const stat in item.stats) {
+//       if (newStats[stat] !== undefined) {
+//         newStats[stat] -= item.stats[stat];
+//       }
+//     }
+//     setItemStats(newStats); // setItemStats instead
+//     setSelectedItems(prev => {
+//       const newItems = [...prev];
+//       newItems[index] = null;
+//       return newItems;
+//     });
+//   };
+
 //   const renderStats = () => {
-//     if (!champion || !champion.stats) {
+//     if (!stats) {
 //       return null;
 //     }
-
+  
 //     const unwantedStats = [
 //       'hpperlevel',
 //       'mpperlevel',
@@ -26,18 +69,11 @@
 //       'attackdamageperlevel',
 //       'attackspeedperlevel',
 //     ];
-
-//     const { stats } = champion;
-
+  
 //     return Object.entries(stats)
 //       .filter(([statName]) => !unwantedStats.includes(statName))
 //       .map(([statName, statValue]) => {
-//         // Skip rendering if the stat is not a number
-//         if (typeof statValue !== 'number') return null;
-
-//         // Calculate the scaled stat based on the level
 //         const scaledStat = Math.round(statValue + (stats[`${statName}perlevel`] || 0) * (level - 1));
-
 //         return (
 //           <Typography variant="body2" color="text.secondary" key={statName}>
 //             {statName}: {scaledStat}
@@ -45,9 +81,17 @@
 //         );
 //       });
 //   };
+//   const renderItemEffects = () => { // new method
+//     return Object.entries(itemStats)
+//       .map(([statName, statValue]) => (
+//         <Typography variant="body2" color="text.secondary" key={statName}>
+//           {statName}: {statValue}
+//         </Typography>
+//       ));
+//   };
 
 //   if (!champion) {
-//     return null; // Render null if the champion is undefined
+//     return null;
 //   }
 
 //   const { name, title } = champion;
@@ -75,32 +119,24 @@
 //             onChange={handleLevelChange}
 //           />
 //         </div>
+//         <Typography variant="h6" component="div">
+//           Champion Stats:
+//         </Typography>
 //         {renderStats()}
+//         <Typography variant="h6" component="div">
+//           Item Effects:
+//         </Typography>
+//         <Box sx={{ p: 1, m: 1, border: '1px solid #000', borderRadius: '5px' }}> 
+//           {renderItemEffects()} 
+//         </Box>
+//         <Container>
+//           <GridComponent
+//             items={Object.values(items.data)}
+//             onItemSelect={handleItemSelect}
+//             onItemRemove={handleItemRemove}
+//           />
+//         </Container>
 //       </CardContent>
-//       {locked && (
-//         <CardContent>
-//           <Grid container spacing={2}>
-//             <Grid item xs={4}>
-//               Slot 1
-//             </Grid>
-//             <Grid item xs={4}>
-//               Slot 2
-//             </Grid>
-//             <Grid item xs={4}>
-//               Slot 3
-//             </Grid>
-//             <Grid item xs={4}>
-//               Slot 4
-//             </Grid>
-//             <Grid item xs={4}>
-//               Slot 5
-//             </Grid>
-//             <Grid item xs={4}>
-//               Slot 6
-//             </Grid>
-//           </Grid>
-//         </CardContent>
-//       )}
 //     </Card>
 //   );
 // };

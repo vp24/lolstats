@@ -33,6 +33,19 @@ export class GridComponent extends React.Component {
     this.props.onItemSelect(item, this.state.selectedSlot); // modified line
   };
 
+  //Remove this to make the boxes flexible
+   buttonStyle = {
+    height: '60px',
+    width: '60px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap'
+  };
+  
+
   handleItemRemove = (i) => {
     const item = this.state.slots[i];
     const newSlots = [...this.state.slots];
@@ -55,7 +68,7 @@ export class GridComponent extends React.Component {
         <Grid container spacing={1} direction="row">
           {slots.map((slot, i) => (
             <Grid key={i} item xs={4}>
-              <Button variant="outlined" onClick={() => this.handleClickOpen(i)}>
+              <Button variant="outlined" style={this.buttonStyle} onClick={() => this.handleClickOpen(i)}>
                 {slot ? (
                   <>
                     {slot.name}

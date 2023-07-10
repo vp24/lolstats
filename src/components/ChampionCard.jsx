@@ -6,8 +6,7 @@ import { items } from '../ItemData';
 const ChampionCard = ({ champion, locked }) => {
   const [level, setLevel] = useState(1);
   const [stats, setStats] = useState(champion ? champion.stats : {});
-  const [itemStats, setItemStats] = useState({}); // new state
-  const [selectedItems, setSelectedItems] = useState(Array(6).fill(null)); 
+  const [itemStats, setItemStats] = useState({});
 
   useEffect(() => {
     if (champion) {
@@ -19,43 +18,33 @@ const ChampionCard = ({ champion, locked }) => {
     setLevel(newValue);
   };
 
-  const handleItemSelect = (item, index) => { 
-    const newStats = { ...itemStats }; // operate on itemStats
+  const handleItemSelect = (item) => {
+    const newItemStats = { ...itemStats };
     for (const stat in item.stats) {
-      if (newStats[stat] !== undefined) {
-        newStats[stat] += item.stats[stat];
+      if (newItemStats[stat] !== undefined) {
+        newItemStats[stat] += item.stats[stat];
       } else {
-        newStats[stat] = item.stats[stat];
+        newItemStats[stat] = item.stats[stat];
       }
     }
-    setItemStats(newStats); // setItemStats instead
-    setSelectedItems(prev => {
-      const newItems = [...prev];
-      newItems[index] = item;
-      return newItems;
-    });
+    setItemStats(newItemStats);
   };
 
-  const handleItemRemove = (item, index) => { 
-    const newStats = { ...itemStats }; // operate on itemStats
+  const handleItemRemove = (item) => {
+    const newItemStats = { ...itemStats };
     for (const stat in item.stats) {
-      if (newStats[stat] !== undefined) {
-        newStats[stat] -= item.stats[stat];
+      if (newItemStats[stat] !== undefined) {
+        newItemStats[stat] -= item.stats[stat];
       }
     }
-    setItemStats(newStats); // setItemStats instead
-    setSelectedItems(prev => {
-      const newItems = [...prev];
-      newItems[index] = null;
-      return newItems;
-    });
+    setItemStats(newItemStats);
   };
 
-  const renderStats = () => {
-    if (!stats) {
+  const renderStats = (currentStats) => {
+    if (!currentStats) {
       return null;
     }
-  
+
     const unwantedStats = [
       'hpperlevel',
       'mpperlevel',
@@ -69,25 +58,17 @@ const ChampionCard = ({ champion, locked }) => {
       'attackdamageperlevel',
       'attackspeedperlevel',
     ];
-  
-    return Object.entries(stats)
+
+    return Object.entries(currentStats)
       .filter(([statName]) => !unwantedStats.includes(statName))
       .map(([statName, statValue]) => {
-        const scaledStat = Math.round(statValue + (stats[`${statName}perlevel`] || 0) * (level - 1));
+        const scaledStat = Math.round(statValue + (currentStats[`${statName}perlevel`] || 0) * (level - 1));
         return (
           <Typography variant="body2" color="text.secondary" key={statName}>
             {statName}: {scaledStat}
           </Typography>
         );
       });
-  };
-  const renderItemEffects = () => { // new method
-    return Object.entries(itemStats)
-      .map(([statName, statValue]) => (
-        <Typography variant="body2" color="text.secondary" key={statName}>
-          {statName}: {statValue}
-        </Typography>
-      ));
   };
 
   if (!champion) {
@@ -102,40 +83,42 @@ const ChampionCard = ({ champion, locked }) => {
         <Typography variant="h5" component="div">
           {name}
         </Typography>
-        <Typography variant="subtitle1" color="text.secondary">
-          {title}
-        </Typography>
-        <div>
-          <Typography id="level-slider" gutterBottom>
-            Level: {level}
-          </Typography>
-          <Slider
-            aria-label="Level"
-            defaultValue={1}
-            min={1}
-            max={18}
-            step={1}
-            valueLabelDisplay="auto"
-            onChange={handleLevelChange}
-          />
-        </div>
-        <Typography variant="h6" component="div">
-          Champion Stats:
-        </Typography>
-        {renderStats()}
-        <Typography variant="h6" component="div">
-          Item Effects:
-        </Typography>
-        <Box sx={{ p: 1, m: 1, border: '1px solid #000', borderRadius: '5px' }}> 
-          {renderItemEffects()} 
-        </Box>
-        <Container>
-          <GridComponent
-            items={Object.values(items.data)}
-            onItemSelect={handleItemSelect}
-            onItemRemove={handleItemRemove}
-          />
-        </Container>
+        {locked && (
+          <>
+            <Typography variant="subtitle1" color="text.secondary">
+              {title}
+            </Typography>
+            <div>
+              <Typography id="level-slider" gutterBottom>
+                Level: {level}
+              </Typography>
+              <Slider
+                aria-label="Level"
+                defaultValue={1}
+                min={1}
+                max={18}
+                step={1}
+                valueLabelDisplay="auto"
+                onChange={handleLevelChange}
+              />
+            </div>
+            <Box>
+              <Typography variant="h6">Champion Stats:</Typography>
+              {renderStats(stats)}
+            </Box>
+            <Box>
+              <Typography variant="h6">Item Stats:</Typography>
+              {renderStats(itemStats)}
+            </Box>
+            <Container>
+              <GridComponent
+                items={Object.values(items.data)}
+                onItemSelect={handleItemSelect}
+                onItemRemove={handleItemRemove}
+              />
+            </Container>
+          </>
+        )}
       </CardContent>
     </Card>
   );

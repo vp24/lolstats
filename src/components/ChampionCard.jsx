@@ -3,16 +3,34 @@ import { Card, CardContent, Typography, Slider, Container, Box } from '@mui/mate
 import { GridComponent } from './GridComponent';
 import { items } from '../ItemData';
 
+const statNameMap = {
+  'FlatPhysicalDamageMod': 'attackdamage',
+  'FlatHPPoolMod': 'hp',
+  'FlatCritChanceMod': 'crit',
+  'FlatSpellBlockMod': 'spellblock',
+  'PercentAttackSpeedMod': 'attackspeed',
+};
+
 const ChampionCard = ({ champion, locked }) => {
   const [level, setLevel] = useState(1);
   const [stats, setStats] = useState(champion ? champion.stats : {});
   const [itemStats, setItemStats] = useState({});
+  const [combinedStats, setCombinedStats] = useState({});
 
   useEffect(() => {
     if (champion) {
       setStats(champion.stats);
     }
   }, [champion]);
+
+  useEffect(() => {
+    let newCombinedStats = {};
+    const allStats = {...stats, ...itemStats};
+    for (let stat in allStats) {
+      newCombinedStats[stat] = (stats[stat] || 0) + (itemStats[stat] || 0);
+    }
+    setCombinedStats(newCombinedStats);
+  }, [stats, itemStats]);
 
   const handleLevelChange = (event, newValue) => {
     setLevel(newValue);
@@ -21,10 +39,11 @@ const ChampionCard = ({ champion, locked }) => {
   const handleItemSelect = (item) => {
     const newItemStats = { ...itemStats };
     for (const stat in item.stats) {
-      if (newItemStats[stat] !== undefined) {
-        newItemStats[stat] += item.stats[stat];
+      const normalizedName = statNameMap[stat] || stat;
+      if (newItemStats[normalizedName] !== undefined) {
+        newItemStats[normalizedName] += item.stats[stat];
       } else {
-        newItemStats[stat] = item.stats[stat];
+        newItemStats[normalizedName] = item.stats[stat];
       }
     }
     setItemStats(newItemStats);
@@ -33,8 +52,9 @@ const ChampionCard = ({ champion, locked }) => {
   const handleItemRemove = (item) => {
     const newItemStats = { ...itemStats };
     for (const stat in item.stats) {
-      if (newItemStats[stat] !== undefined) {
-        newItemStats[stat] -= item.stats[stat];
+      const normalizedName = statNameMap[stat] || stat;
+      if (newItemStats[normalizedName] !== undefined) {
+        newItemStats[normalizedName] -= item.stats[stat];
       }
     }
     setItemStats(newItemStats);
@@ -52,6 +72,8 @@ const ChampionCard = ({ champion, locked }) => {
       'armorperlevel',
       'spellblockperlevel',
       'attackrange',
+      'hpregen',
+      'mpregen',
       'hpregenperlevel',
       'mpregenperlevel',
       'critperlevel',
@@ -109,6 +131,10 @@ const ChampionCard = ({ champion, locked }) => {
             <Box>
               <Typography variant="h6">Item Stats:</Typography>
               {renderStats(itemStats)}
+            </Box>
+            <Box>
+              <Typography variant="h6">Combined Stats:</Typography>
+              {renderStats(combinedStats)}
             </Box>
             <Container>
               <GridComponent

@@ -92,7 +92,7 @@ const ChampionCard = ({ champion, locked }) => {
       }
       return (
         <Typography variant="body2" color="text.secondary" key={statName}>
-          {statName}: {scaledStat}
+  {statName}: {scaledStat.toFixed(2)}
         </Typography>
       );
     });

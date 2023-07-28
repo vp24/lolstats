@@ -82,16 +82,21 @@ const ChampionCard = ({ champion, locked }) => {
     ];
 
     return Object.entries(currentStats)
-      .filter(([statName]) => !unwantedStats.includes(statName))
-      .map(([statName, statValue]) => {
-        const scaledStat = Math.round(statValue + (currentStats[`${statName}perlevel`] || 0) * (level - 1));
-        return (
-          <Typography variant="body2" color="text.secondary" key={statName}>
-            {statName}: {scaledStat}
-          </Typography>
-        );
-      });
-  };
+    .filter(([statName]) => !unwantedStats.includes(statName))
+    .map(([statName, statValue]) => {
+      let scaledStat;
+      if (statName === 'attackspeed') {
+        scaledStat = (statValue + (currentStats[`${statName}perlevel`] / 100) * (level - 1));
+      } else {
+        scaledStat = Math.round(statValue + (currentStats[`${statName}perlevel`] || 0) * (level - 1));
+      }
+      return (
+        <Typography variant="body2" color="text.secondary" key={statName}>
+          {statName}: {scaledStat}
+        </Typography>
+      );
+    });
+};
 
   if (!champion) {
     return null;

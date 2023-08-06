@@ -24,6 +24,13 @@ const ChampionComparison = ({ champions }) => {
     setLocked(true);
   };
 
+  const nameToImage = {
+    "Nunu & Willump": "Nunu",
+    "Renata Glasc": "Renata",
+    "Wukong": "MonkeyKing",
+    // ... more mappings if needed
+  };
+
   return (
     <Grid container spacing={3} justifyContent="center">
       {[0, 1].map((index) => (
@@ -63,12 +70,15 @@ const ChampionComparison = ({ champions }) => {
           <Grid container spacing={2}>
             {Object.values(champions).map((champion) => (
               <Grid item key={champion.id}>
-                <img
-                  src={`/champIcons/${champion.name}.png`}
-                  alt={champion.name}
-                  style={{ cursor: 'pointer', width: '50px', height: '50px' }}
-                  onClick={() => handleChampionSelect(champion.id)}
-                />
+              <img
+  src={`/champIcons/${(nameToImage[champion.name] || champion.name.replace(/ /g, '').replace(/'/g, '').replace(/\./g, '')).toLowerCase()}.png`}
+  alt={champion.name}
+  style={{ cursor: 'pointer', width: '50px', height: '50px' }}
+  onClick={() => handleChampionSelect(champion.id)}
+/>
+
+
+
               </Grid>
             ))}
           </Grid>

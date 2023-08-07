@@ -14,9 +14,9 @@ const ChampionComparison = ({ champions }) => {
     setActiveSelection((activeSelection + 1) % 2);
   };
 
-  const capitalizeFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
+  const formatImageFileName = (name) => {
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase().replace(/ /g, '').replace(/'/g, '').replace(/\./g, '');
+  };  
 
   const handleReset = () => {
     setSelectedChampions([null, null]);
@@ -75,7 +75,7 @@ const ChampionComparison = ({ champions }) => {
             {Object.values(champions).map((champion) => (
               <Grid item key={champion.id}>
               <img
-  src={`/champIcons/${(nameToImage[champion.name] || capitalizeFirstLetter(champion.name.replace(/ /g, '').replace(/'/g, '').replace(/\./g, '')))}.png`}
+  src={`/champIcons/${formatImageFileName(champion.name)}.png`}
   alt={champion.name}
   style={{ cursor: 'pointer', width: '50px', height: '50px' }}
   onClick={() => handleChampionSelect(champion.id)}

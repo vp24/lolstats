@@ -9,7 +9,7 @@ function App() {
   return (
     <Container maxWidth="md">
       <Typography variant="h2" align="center" gutterBottom>
-        Champion Comparison
+        Champion Comparer
       </Typography>
       <ChampionComparison champions={champions.data} />
     </Container>

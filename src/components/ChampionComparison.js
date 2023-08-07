@@ -71,11 +71,12 @@ const ChampionComparison = ({ champions }) => {
             {Object.values(champions).map((champion) => (
               <Grid item key={champion.id}>
               <img
-  src={`${process.env.PUBLIC_URL}/champIcons/${(nameToImage[champion.name] || champion.name.replace(/ /g, '').replace(/'/g, '').replace(/\./g, '')).toLowerCase()}.png`}
+  src={`${process.env.PUBLIC_URL}/public/champIcons/${(nameToImage[champion.name] || champion.name.replace(/ /g, '').replace(/'/g, '').replace(/\./g, '')).toLowerCase()}.png`}
   alt={champion.name}
   style={{ cursor: 'pointer', width: '50px', height: '50px' }}
   onClick={() => handleChampionSelect(champion.id)}
 />
+
 
 
 
